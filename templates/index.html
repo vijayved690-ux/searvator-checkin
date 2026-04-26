@@ -9,9 +9,18 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
     <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+        
         <div class="text-center mb-6">
-            <h2 class="text-2xl font-extrabold text-blue-900">Usmanpura Imaging Centre</h2>
-            <p class="text-xs text-gray-500 font-semibold tracking-wider mt-1">SEARVATOR IT SOLUTIONS PVT. LTD. | WE BUY AND SELL | RUNNING MRI CENTRES</p>
+            <h2 class="text-2xl font-extrabold text-blue-900">Hospital Check-In</h2>
+            <p class="text-sm text-gray-500 mt-1">Please fill out your basic details</p>
+            
+            <div class="mt-2 text-xs text-blue-600 font-medium flex justify-center space-x-2">
+                <span class="cursor-pointer underline">English</span>
+                <span class="text-gray-300">|</span>
+                <span class="cursor-pointer hover:underline text-gray-500">हिंदी</span>
+                <span class="text-gray-300">|</span>
+                <span class="cursor-pointer hover:underline text-gray-500">ગુજરાતી</span>
+            </div>
         </div>
 
         <form id="checkinForm" class="space-y-4">
@@ -20,6 +29,7 @@
             <div class="flex space-x-4">
                 <input type="number" id="age" placeholder="Age" required class="w-1/2 px-4 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <select id="gender" class="w-1/2 px-4 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="" disabled selected>Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                 </select>
@@ -32,14 +42,16 @@
                 <option value="Repeat">Repeat Patient</option>
             </select>
 
-            <textarea id="purpose" rows="2" placeholder="Purpose of visit (e.g. Doctor prescribed Cardiac MRI)" class="w-full px-4 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            <input type="text" id="area" placeholder="Area / Location" required class="w-full px-4 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+            <textarea id="purpose" rows="2" placeholder="Purpose of visit (Optional)" class="w-full px-4 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
 
             <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 transition duration-300">Submit Details</button>
         </form>
 
         <div id="successMsg" class="hidden mt-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
             <p class="font-bold">Check-in Successful!</p>
-            <p class="text-sm">Please wait in the reception area.</p>
+            <p class="text-sm">Please wait at the reception area.</p>
         </div>
     </div>
 
@@ -48,13 +60,15 @@
             e.preventDefault();
             
             const payload = {
+                hospital_id: "HOSP-001", // Required for Multi-Hospital View (Section 7)
                 name: document.getElementById('name').value,
                 age: document.getElementById('age').value,
                 gender: document.getElementById('gender').value,
                 contact: document.getElementById('contact').value,
                 visit_type: document.getElementById('visit_type').value,
+                area: document.getElementById('area').value,
                 purpose: document.getElementById('purpose').value,
-                campaign: "qr_desk_1" // For tracking
+                campaign: "qr_desk_1"
             };
 
             const response = await fetch('/api/submit_checkin', {
