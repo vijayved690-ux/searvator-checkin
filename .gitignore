@@ -1,0 +1,16 @@
+# Security / Environment Variables
+.env
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Python Cache (Bin kachra files jo server par nahi jani chahiye)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Mac OS specific (Agar aap ya aapki team Mac use kare)
+.DS_Store
