@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Sheet View</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; }
+        .toolbar { background-color: #f1f3f4; padding: 10px 20px; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center;}
+        .toolbar h1 { margin: 0; font-size: 18px; color: #202124; font-weight: normal; }
+        .sheet-container { overflow: auto; height: calc(100vh - 50px); background: white; }
+        table { border-collapse: collapse; min-width: 100%; font-size: 13px; }
+        th { background-color: #f8f9fa; border: 1px solid #c0c0c0; padding: 5px; text-align: center; color: #666; font-weight: normal; position: sticky; top: 0; z-index: 2; }
+        .row-num { background-color: #f8f9fa; border: 1px solid #c0c0c0; text-align: center; color: #666; width: 30px; position: sticky; left: 0; z-index: 1;}
+        td { border: 1px solid #e0e0e0; padding: 6px 10px; color: #000; white-space: nowrap; outline: none; }
+        td:focus { border: 2px solid #1a73e8; }
+        tr:hover td { background-color: #f5f5f5; }
+        .ai-tag { background-color: #e6f4ea; color: #137333; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 11px;}
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <h1>Patient Leads Database - Live Sync</h1>
+    </div>
+
+    <div class="sheet-container">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th class="row-num"></th>
+                    <th>A (Timestamp)</th>
+                    <th>B (Patient ID)</th>
+                    <th>C (Name)</th>
+                    <th>D (Age)</th>
+                    <th>E (Contact)</th>
+                    <th>F (Type)</th>
+                    <th>G (Purpose)</th>
+                    <th>H (AI Suggested Product)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadSheetData() {
+            const response = await fetch('/api/sheet_data');
+            const result = await response.json();
+            const tbody = document.getElementById('tableBody');
+            
+            result.data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                
+                // Row Number Column
+                const tdNum = document.createElement('td');
+                tdNum.className = 'row-num';
+                tdNum.textContent = index + 1;
+                tr.appendChild(tdNum);
+
+                // Data Columns
+                row.forEach((cellData, colIndex) => {
+                    const td = document.createElement('td');
+                    // Editable cell illusion
+                    td.contentEditable = "true"; 
+                    
+                    if (colIndex === 7) { // AI Lead Column
+                        td.innerHTML = `<span class="ai-tag">${cellData}</span>`;
+                    } else {
+                        td.textContent = cellData;
+                    }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Load data on start
+        loadSheetData();
+        // Auto refresh every 30 seconds to simulate real-time sheet sync
+        setInterval(() => {
+            document.getElementById('tableBody').innerHTML = '';
+            loadSheetData();
+        }, 30000);
+    </script>
+</body>
+</html>
